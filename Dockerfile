@@ -4,6 +4,7 @@ RUN apt-get update -y
 
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /app
+RUN mkdir /prom_metrics
 WORKDIR /app/
 
 ENTRYPOINT [ "python", "/app/main.py" ]
