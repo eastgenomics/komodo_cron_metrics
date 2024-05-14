@@ -9,6 +9,7 @@ class Prometheus:
     A class for formatting and writing logs which are readible by Prometheus
     monitoring software. Currently this only logs a 'job completed' message.
     """
+
     def __init__(
         self,
         out_path: str,
@@ -21,10 +22,8 @@ class Prometheus:
         self.ppid = os.getppid()
         self.temp_filename = f"{self.out_path}/{self.jobname}.prom.{self.ppid}"
 
-    def format_metrics(
-            self
-    ) -> None:
-        """ 
+    def format_metrics(self) -> None:
+        """
         Formats a Prometheus-compatible 'job completed' metric.
         Adds it to a list of ready-to-write metrics.
         """
@@ -33,9 +32,7 @@ class Prometheus:
         self.metrics.append(completed_metric)
         print(self.metrics)
 
-    def emit_temp_metrics(
-            self
-    ) -> None:
+    def emit_temp_metrics(self) -> None:
         """
         Saves the Prometheus metrics to a temporary output prom file.
         """
@@ -44,9 +41,7 @@ class Prometheus:
             for metric in self.metrics:
                 new_file.write(metric + "\n")
 
-    def replace_old_metrics(
-            self
-    ) -> None:
+    def replace_old_metrics(self) -> None:
         """
         Handles the deletion of older metrics ending in *.prom, to prevent
         interference with logging. Renames new metric and sets permissions.
@@ -59,4 +54,3 @@ class Prometheus:
         new_filename = Path(f"{self.out_path}/{self.jobname}.prom")
         Path(self.temp_filename).rename(new_filename)
         os.chmod(new_filename, int("644", base=8))
-
