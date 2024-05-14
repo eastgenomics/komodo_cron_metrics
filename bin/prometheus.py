@@ -30,7 +30,6 @@ class Prometheus:
         timestamp = int(round(date.datetime.now().timestamp()))
         completed_metric = f"{self.jobname}_completed {timestamp}"
         self.metrics.append(completed_metric)
-        print(self.metrics)
 
     def emit_temp_metrics(self) -> None:
         """
