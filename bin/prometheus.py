@@ -20,9 +20,7 @@ class Prometheus:
         self.jobname = jobname
         self.metrics = []
         self.ppid = os.getppid()
-        self.error_filename = (
-            f"{self.out_path}/{self.ppid}_{date.datetime.now()}.err"
-        )
+        self.error_filename = f"{self.out_path}/{str(date.datetime.now())}.err"
         self.temp_filename = f"{self.out_path}/{self.jobname}.prom.{self.ppid}"
 
     def error_if_job_name_invalid(self) -> None:
@@ -33,11 +31,12 @@ class Prometheus:
         """
         regex_pattern = "^[a-zA-Z_:][a-zA-Z0-9_:]*$"
         if not re.match(regex_pattern, self.jobname):
-            error = f"The Prometheus job name does not match the required "
-            f"format - it must match the regex {regex_pattern}"
+            error = f"The Prometheus job name {self.jobname} does not match "
+            f"the Prometheus data model requirements - it needs to match "
+            f"the regex {regex_pattern}"
             with open(self.error_filename, "a") as new_file:
                 new_file.write(error)
-            os.chmod(new_file, int("644", base=8))
+            os.chmod(self.error_filename, int("644", base=8))
             exit(0)
 
     def format_metrics(self) -> None:
