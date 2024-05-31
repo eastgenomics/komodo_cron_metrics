@@ -2,6 +2,7 @@ import datetime as date
 import glob
 from pathlib import Path
 import os
+import re
 
 
 class Prometheus:
@@ -16,11 +17,29 @@ class Prometheus:
         jobname: str,
     ):
         self.out_path = out_path
-        # make sure jobname matches Prom data model (no hyphens)
         self.jobname = jobname
         self.metrics = []
         self.ppid = os.getppid()
+        self.error_filename = f"{self.out_path}/{str(date.datetime.now())}.err"
         self.temp_filename = f"{self.out_path}/{self.jobname}.prom.{self.ppid}"
+
+    def error_if_job_name_invalid(self) -> None:
+        """
+        Check the job name for forbidden characters.
+        Error out with a logged message if not. Make this read-accessible to
+        non-cron users.
+        """
+        regex_pattern = "^[a-zA-Z_:][a-zA-Z0-9_:]*$"
+        if not re.match(regex_pattern, self.jobname):
+            error = (
+                f"The Prometheus job name {self.jobname} does not match "
+                + f"the Prometheus data model requirements - it needs to match "
+                + f"the regex {regex_pattern}"
+            )
+            with open(self.error_filename, "a") as new_file:
+                new_file.write(error)
+            os.chmod(self.error_filename, int("644", base=8))
+            exit(0)
 
     def format_metrics(self) -> None:
         """
