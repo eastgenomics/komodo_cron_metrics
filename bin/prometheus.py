@@ -31,9 +31,11 @@ class Prometheus:
         """
         regex_pattern = "^[a-zA-Z_:][a-zA-Z0-9_:]*$"
         if not re.match(regex_pattern, self.jobname):
-            error = f"The Prometheus job name {self.jobname} does not match "
-            + f"the Prometheus data model requirements - it needs to match "
-            + f"the regex {regex_pattern}"
+            error = (
+                f"The Prometheus job name {self.jobname} does not match "
+                + f"the Prometheus data model requirements - it needs to match "
+                + f"the regex {regex_pattern}"
+            )
             with open(self.error_filename, "a") as new_file:
                 new_file.write(error)
             os.chmod(self.error_filename, int("644", base=8))
