@@ -1,5 +1,5 @@
 import argparse
-import re
+
 
 def get_args():
     """
